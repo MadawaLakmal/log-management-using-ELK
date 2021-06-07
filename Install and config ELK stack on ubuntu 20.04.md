@@ -2,81 +2,106 @@
 
 # Install ELK Stack
 
-Every component of the the ** ELK ** stack needs java as it's runtime env. So first of all we need to install java.
+#### Every component of the the ELK stack needs *JAVA* as it's runtime env. So first of all we need to install java.
 
 ## Install java
 
-Check available java versions 
-> $ java -version
+Check available java versions, 
+
+``` $ java -version ```
+
 Install stable version 
-> $ sudo apt install openjdk-8-jre-headless
 
-## Install Elastic search [] [ https://www.elastic.co/downloads/elasticsearch ]
+``` $ sudo apt install openjdk-8-jre-headless ```
 
+## Install Elastic search
+[ElsaticSearch] (https://www.elastic.co/downloads/elasticsearch)
+
+Make sure you have installed java on your system
+
+Add Elastic Repository to the system,
 ```
-Add Elastic Repository and install
-	$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-	$ sudo apt-get install apt-transport-https
-  $ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
-  $ sudo apt-get update
-	$ sudo apt-get install elasticsearch
+$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+$ sudo apt-get install apt-transport-https
+$ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
+$ sudo apt-get update
+```
+Install ElasticSearch package,
+```
+$ sudo apt-get install elasticsearch
 ```
 
-###### Configure Elasticsearch
+#### Configure Elasticsearch
 
-```
-$ sudo vim /etc/elasticsearch/elasticsearch.yml
-	Config following lines,
-		network.host: 192.168.0.1
-		http.port: 9200
-	
-	Configs for single-node
-  	discovery.type: single-node #without this it will recheck for prod configurations.
-```
-```
-	Recommended configs for java heap, (Half from the total memory)
+Open main elasticsearch config file,
 
-		$ sudo vim /etc/elasticsearch/jvm.options
+```$ sudo vim /etc/elasticsearch/elasticsearch.yml```
 
-		Edit,
-		-Xms512m # minimum size
-		-Xmx512m # maximum size
+Uncomment and Config following lines,
+```
+network.host: 192.168.0.1       # Elasticsearch node IP address
+http.port: 9200                 # Elastic Service Port	
+discovery.type: single-node     # Without this service will recheck for prod configurations.
+```
+
+Recommended configs for java heap, (Half from the total memory)
+```
+$ sudo vim /etc/elasticsearch/jvm.options
+```
+Edit,
+```
+-Xms512m # minimum size
+-Xmx512m # maximum size
 ```
 
 Enable and start the service,
->    $ systemctl enable elasticsearch.service
->    $ systemctl start elasticsearch.service
+```
+$ systemctl enable elasticsearch.service
+$ systemctl start elasticsearch.service
+```
 
 Check elasticsearch service 
-	$ curl -X GET "192.168.112.3:9200"
+```
+$ curl -X GET "192.168.112.3:9200"
+```
 
-Install Logstash
+# Install Logstash
 
-Install java
-Check available java versions 
-$ java -version
-Install stable version 
-$ sudo apt install openjdk-8-jre-headless
+Make sure you have installed java on your system
 
-Add Elastic Repository and install
-	$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-	$ sudo apt-get install apt-transport-https
+Add Elastic Repository to the system,
 
-		$ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
+```
+$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+$ sudo apt-get install apt-transport-https
+$ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
+$ sudo apt-get update
+```
 
-		$ sudo apt-get update
-		$ sudo apt install logstash
+Install Logstash package
+```
+$ sudo apt install logstash
+```
 
-Configure Logstash for beat inputs
-	$ sudo vim /etc/logstash/conf.d/main-logstash.conf
+#### Configure Logstash for beat inputs
 
-	Add these lines,
+Open logstash main config file
+```
+$ sudo vim /etc/logstash/conf.d/main-logstash.conf
+```
+
+Sample template lines,
+
+```
 input {
     beats {
         port => "5044"
     }
 }
-# filter {
+
+# Filter part not necessary
+
+filter {
     grok {
         match => { "message" => "%{COMBINEDAPACHELOG}"}
     }
@@ -84,36 +109,54 @@ input {
         source => "clientip"
     }
 }
+
 output {
     elasticsearch {
         hosts => [ "192.168.112.3:9200" ]
         index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
     }
 }
+```
 
 Enable and start the service
-Install Kibana
+```
+$ sudo systemctl enable logstash.service
+$ sudo systemctl start logstash.service
+```
 
-Install java
-Check available java versions 
-$ java -version
-Install stable version 
-$ sudo apt install openjdk-8-jre-headless
 
-Add Elastic Repository and install
-	$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-	$ sudo apt-get install apt-transport-https
+# Install Kibana
 
-		$ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
+Make sure you have installed java on your system
 
-		$ sudo apt-get update
-		$ sudo apt install kibana
+Add Elastic Repository to the system,
 
-Add following configs to enable outside connections for kibana and to connect to elasticsearch service,
-	$ sudo vim /etc/kibana/kibana.yml
+```
+$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+$ sudo apt-get install apt-transport-https
+$ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
+$ sudo apt-get update
+```
+Install kibana package,
+```
+$ sudo apt install kibana
+```
 
-	#server.port: 5601
-	#server.host: "192.168.112.21"
-            #elasticsearch.hosts: ["http://192.168.112.3:9200"]
+Change main config file to enable outside connections for kibana and to connect to elasticsearch service,
+
+Open main config file,
+```
+$ sudo vim /etc/kibana/kibana.yml
+```
+Change followin entries,
+```
+server.port: 5601                        		# Kibana serving port config
+server.host: "192.168.112.21"				# Kibana host IP
+elasticsearch.hosts: ["http://192.168.112.3:9200"]	# ElasticSearch host IP & Port
+```
 
 Enable and start the service
+```
+$ sudo systemctl enable kibana.service
+$ sudo systemctl start kibana.service
+```
