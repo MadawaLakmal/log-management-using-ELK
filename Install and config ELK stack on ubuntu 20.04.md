@@ -123,7 +123,10 @@ Enable and start the service
 $ sudo systemctl enable logstash.service
 $ sudo systemctl start logstash.service
 ```
-
+Logstash config test
+```
+$ sudo logstash -f /etc/logstash/conf.d/main-logstash.conf --config.test_and_exit
+```
 
 # Install Kibana
 
