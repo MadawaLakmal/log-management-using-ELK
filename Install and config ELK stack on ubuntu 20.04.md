@@ -14,6 +14,16 @@ Install stable version
 
 ``` $ sudo apt install openjdk-11-jdk-headless ```
 
+Setup Java Home 
+
+``` $ sudo vim /etc/bash.bashrc```
+
+and add following lines
+
+```export JAVA_HOME="/usr/bin/java"
+
+export PATH=$JAVA_HOME/bin:$PATH```
+
 ## Install Elastic search
 [ElsaticSearch] (https://www.elastic.co/downloads/elasticsearch)
 
