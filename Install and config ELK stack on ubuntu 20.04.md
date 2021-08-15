@@ -12,7 +12,7 @@ Check available java versions,
 
 Install stable version 
 
-``` $ sudo apt install openjdk-8-jre-headless ```
+``` $ sudo apt install openjdk-11-jdk-headless ```
 
 ## Install Elastic search
 [ElsaticSearch] (https://www.elastic.co/downloads/elasticsearch)
