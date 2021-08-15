@@ -1,6 +1,7 @@
 # Install Filebeat
 
 #### Donwload and Install 
+For the latest : https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-installation-configuration.html
 ```
 $ wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-oss-7.12.0-amd64.deb
 
