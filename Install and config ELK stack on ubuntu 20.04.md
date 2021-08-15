@@ -44,16 +44,6 @@ http.port: 9200                 # Elastic Service Port
 discovery.type: single-node     # Without this service will recheck for prod configurations.
 ```
 
-Recommended configs for java heap, (Half from the total memory)
-```
-$ sudo vim /etc/elasticsearch/jvm.options
-```
-Edit,
-```
--Xms512m # minimum size
--Xmx512m # maximum size
-```
-
 Enable and start the service,
 ```
 $ systemctl enable elasticsearch.service
