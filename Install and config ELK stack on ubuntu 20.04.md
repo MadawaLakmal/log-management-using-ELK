@@ -20,9 +20,10 @@ Setup Java Home
 
 and add following lines
 
-```export JAVA_HOME="/usr/bin/java"
-
-export PATH=$JAVA_HOME/bin:$PATH```
+```
+export JAVA_HOME='/usr/bin/java'
+export PATH=$JAVA_HOME/bin:$PATH
+```
 
 ## Install Elastic search
 [ElsaticSearch] (https://www.elastic.co/downloads/elasticsearch)
