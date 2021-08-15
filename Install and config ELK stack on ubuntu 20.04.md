@@ -25,7 +25,7 @@ export JAVA_HOME='/usr/bin/java'
 export PATH=$JAVA_HOME/bin:$PATH
 ```
 
-## Install Elastic search
+## Install Elasticsearch
 [ElsaticSearch] (https://www.elastic.co/downloads/elasticsearch)
 
 Make sure you have installed java on your system
@@ -152,7 +152,7 @@ Open main config file,
 ```
 $ sudo vim /etc/kibana/kibana.yml
 ```
-Change followin entries,
+Change following entries,
 ```
 server.port: 5601                        		# Kibana serving port config
 server.host: "192.168.112.21"				# Kibana host IP
