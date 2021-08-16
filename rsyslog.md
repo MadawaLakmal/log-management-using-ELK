@@ -2,6 +2,8 @@
 
 ### 1. Sending logs from client to server
 
+Note : In this tutorial i'm using port 514 as UDP port and 5514 as TCP port. According to your preference, you can use the same port for both protocoles if you want.
+
 #### server side configs
 
 Enable UFW ports
