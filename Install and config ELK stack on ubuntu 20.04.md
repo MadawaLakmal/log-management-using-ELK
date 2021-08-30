@@ -27,6 +27,16 @@ add following lines,
 -Xmx2g
 ```
 
+## Default Ports needs to open for specific service,
+
+```
+Elasticsearch Port : 9200
+Kibana Port : 5601
+Logstash Port : 5044
+```
+
+Make sure to enable these ports if you are using an firewall.
+
 ## Install Elasticsearch as a Single Node Cluster
 [ElsaticSearch] (https://www.elastic.co/downloads/elasticsearch)
 
