@@ -69,17 +69,5 @@ $ sudo systemctl restart syslog
 Check the server side configs by creating test logs
 
 ```
-$ sudo logger -t "Testing Log message" $(date)
+$ sudo logger -t "Test" "Syslog Log Collection Check"
 ```
-
-
-
-
-
-
-
-
-
-
-
-
