@@ -35,7 +35,7 @@ Kibana Port : 5601
 Logstash Port : 5044
 ```
 
-Make sure to enable these ports if you are using an firewall.
+Make sure to enable these ports if you are using a firewall.
 
 ## Install Elasticsearch as a Single Node Cluster
 [ElsaticSearch] (https://www.elastic.co/downloads/elasticsearch)
