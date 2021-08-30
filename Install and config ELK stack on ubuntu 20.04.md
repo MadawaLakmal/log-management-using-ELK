@@ -14,18 +14,20 @@ Install stable version
 
 ``` $ sudo apt install openjdk-11-jdk-headless ```
 
-Setup Java Home 
-
-``` $ sudo vim /etc/bash.bashrc```
-
-and add following lines
+Setup Java Heam Memory
 
 ```
-export JAVA_HOME='/usr/bin/java'
-export PATH=$JAVA_HOME/bin:$PATH
+$ sudo vim /etc/elasticsearch/jvm.options
+```
+add following lines,
+[ best heap size will be half of your memory size i.e: if you have 4Gb ram, then the heap should be 2Gb ] This is not mandatory for test env.
+
+```
+-Xms2g
+-Xmx2g
 ```
 
-## Install Elasticsearch
+## Install Elasticsearch as a Single Node Cluster
 [ElsaticSearch] (https://www.elastic.co/downloads/elasticsearch)
 
 Make sure you have installed java on your system
@@ -33,13 +35,18 @@ Make sure you have installed java on your system
 Add Elastic Repository to the system,
 ```
 $ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-$ sudo apt-get install apt-transport-https
+$ sudo apt install apt-transport-https
 $ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
-$ sudo apt-get update
+$ sudo apt update
 ```
 Install ElasticSearch package,
 ```
 $ sudo apt-get install elasticsearch
+
+for specific version,
+
+$ sudo apt list logstash -a
+$ sudo apt install elasticsearch=7.12.0    # [my version=7.12.0]
 ```
 
 #### Configure Elasticsearch
@@ -52,7 +59,7 @@ Uncomment and Config following lines,
 ```
 network.host: 192.168.0.1       # Elasticsearch node IP address
 http.port: 9200                 # Elastic Service Port	
-discovery.type: single-node     # Without this service will recheck for prod configurations.
+discovery.type: single-node     # Without this, Elastic service will recheck for multinode configurations.
 ```
 
 Enable and start the service,
@@ -74,14 +81,19 @@ Add Elastic Repository to the system,
 
 ```
 $ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-$ sudo apt-get install apt-transport-https
+$ sudo apt install apt-transport-https
 $ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
-$ sudo apt-get update
+$ sudo apt update
 ```
 
 Install Logstash package
 ```
 $ sudo apt install logstash
+
+for specific version,
+
+$ sudo apt list logstash -a
+$ sudo apt install logstash=7.12.0    # [my version=7.12.0]
 ```
 
 #### Configure Logstash for beat inputs
@@ -102,18 +114,18 @@ input {
 
 # Filter part not necessary
 
-filter {
-    grok {
-        match => { "message" => "%{COMBINEDAPACHELOG}"}
-    }
-    geoip {
-        source => "clientip"
-    }
-}
+# filter {
+#    grok {
+#        match => { "message" => "%{COMBINEDAPACHELOG}"}
+#    }
+#    geoip {
+#        source => "clientip"
+#    }
+#}
 
 output {
     elasticsearch {
-        hosts => [ "192.168.112.3:9200" ]
+        hosts => [ "elasticsearch_node_ip:9200" ]
         index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
     }
 }
@@ -137,13 +149,18 @@ Add Elastic Repository to the system,
 
 ```
 $ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-$ sudo apt-get install apt-transport-https
+$ sudo apt install apt-transport-https
 $ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
-$ sudo apt-get update
+$ sudo apt update
 ```
 Install kibana package,
 ```
 $ sudo apt install kibana
+
+for specific version,
+
+$ sudo apt list kibana -a
+$ sudo apt install kibana=7.12.0    # [my version=7.12.0]
 ```
 
 Change main config file to enable outside connections for kibana and to connect to elasticsearch service,
@@ -155,8 +172,8 @@ $ sudo vim /etc/kibana/kibana.yml
 Change following entries,
 ```
 server.port: 5601                        		# Kibana serving port config
-server.host: "192.168.112.21"				# Kibana host IP
-elasticsearch.hosts: ["http://192.168.112.3:9200"]	# ElasticSearch host IP & Port
+server.host: "192.168.112.21"				    # Kibana host IP
+elasticsearch.hosts: ["http://elasticsearch_node_ip:9200"]	    # ElasticSearch host IP & Port
 ```
 
 Enable and start the service
